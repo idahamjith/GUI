@@ -1,0 +1,792 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>EC3405 HTML &amp; CSS Quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one study column. Header, question-set filter, a 50-cell progress map, then the question pane styled like an editor tab, with a white browser viewport under the explanation. */
+:root{
+  --bg:#EDF1EE; --surface:#FAFBF9; --surface-2:#F1F4F1; --code-bg:#F5F7F4;
+  --ink:#16201B; --muted:#57655E; --line:#D2DAD4;
+  --accent:#1C5DBF; --accent-soft:#E2EBF9; --on-accent:#FFFFFF;
+  --ok:#1A7547; --ok-soft:#DFF0E6; --bad:#B4371E; --bad-soft:#F7E2DC;
+  --t-tag:#9C2E68; --t-attr:#875600; --t-str:#167657; --t-com:#788680; --t-prop:#1C5DBF;
+  --page-bg:#FFFFFF; --page-fg:#000000;
+  --f-display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --f-body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Consolas,monospace;
+  color-scheme:light; /* light theme only, by request */
+}
+*,*::before,*::after{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:800px;margin:0 auto;padding-inline:16px;padding-block:30px 72px;display:flex;flex-direction:column;gap:22px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* header */
+.top{display:flex;flex-direction:column;gap:8px}
+.cmt{margin:0;font-family:var(--f-mono);font-size:13px;color:var(--t-com)}
+h1{margin:0;font-family:var(--f-display);font-weight:800;font-size:clamp(2.1rem,6.5vw,3.2rem);line-height:1;letter-spacing:-.025em;text-wrap:balance}
+.h-html{color:var(--t-tag)} .h-css{color:var(--t-prop)} .h-amp{color:var(--muted);font-weight:500}
+.intro{margin:2px 0 0;color:var(--muted);max-width:64ch}
+
+/* toolbar */
+.toolbar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between}
+.chips,.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chip{appearance:none;font:inherit;font-size:14px;line-height:1;padding:9px 13px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;display:inline-flex;gap:7px;align-items:center}
+.chip:hover{border-color:var(--ink)}
+.chip .ct{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.chip[aria-pressed="true"] .ct{color:inherit;opacity:.7}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;flex:none}
+.d-html{background:var(--t-tag)} .d-css{background:var(--t-prop)} .d-extra{background:var(--t-attr)} .d-miss{background:var(--bad)}
+.toggle{appearance:none;font:inherit;font-size:14px;line-height:1;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;display:inline-flex;gap:8px;align-items:center}
+.toggle:hover{border-color:var(--ink)}
+.sw{width:26px;height:16px;border-radius:999px;background:var(--line);position:relative;flex:none;transition:background-color .15s}
+.sw::after{content:"";position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:var(--surface);transition:transform .15s}
+.toggle[aria-pressed="true"] .sw{background:var(--accent)}
+.toggle[aria-pressed="true"] .sw::after{transform:translateX(10px)}
+.reset{appearance:none;font:inherit;font-size:14px;line-height:1;padding:9px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;display:inline-flex;gap:7px;align-items:center}
+.reset svg{width:14px;height:14px;flex:none}
+.reset:hover{border-color:var(--bad);color:var(--bad)}
+.reset.arm{background:var(--bad);border-color:var(--bad);color:var(--surface);font-weight:700}
+.cancel{appearance:none;background:none;border:0;font:inherit;font-size:14px;color:var(--muted);padding:8px 4px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.cancel:hover{color:var(--ink)}
+
+/* save status */
+.saved{margin:-8px 0 0;display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.saved .dot{background:var(--ok)}
+.saved.warn{color:var(--bad)}
+.saved.warn .dot{background:var(--bad)}
+.saved.busy .dot{background:var(--t-attr)}
+
+/* progress */
+.progress{display:flex;flex-wrap:wrap;gap:16px 32px;align-items:center}
+.map{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:5px;flex:1 1 300px;max-width:460px}
+.cell{appearance:none;display:block;width:100%;height:30px;padding:0;border-radius:5px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-family:var(--f-mono);font-size:11px;cursor:pointer;font-variant-numeric:tabular-nums}
+.cell:hover{border-color:var(--ink)}
+.cell.ok{background:var(--ok-soft);border-color:transparent;color:var(--ok);font-weight:600}
+.cell.bad{background:var(--bad-soft);border-color:transparent;color:var(--bad);font-weight:600;text-decoration:line-through}
+.cell.cur{outline:2px solid var(--accent);outline-offset:1px;color:var(--ink)}
+.score{display:flex;flex-direction:column;gap:8px;flex:1 1 180px;min-width:0}
+.score-big{font-family:var(--f-display);font-weight:800;font-size:2rem;line-height:1;font-variant-numeric:tabular-nums}
+.score-big span{font-weight:500;color:var(--muted);font-size:1.2rem}
+.meter{height:6px;border-radius:999px;background:var(--line);display:flex;overflow:hidden;width:100%;max-width:260px}
+.meter i{display:block;height:100%}
+.score-line{display:flex;gap:6px 14px;flex-wrap:wrap;font-size:14px;color:var(--muted)}
+.score-line b{font-family:var(--f-mono);font-weight:600;color:var(--ink)}
+.score-line .b-ok{color:var(--ok)} .score-line .b-bad{color:var(--bad)}
+
+/* question card */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;scroll-margin-top:16px}
+.card-head{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;padding:10px 18px;background:var(--surface-2);border-bottom:1px solid var(--line);font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.qno{color:var(--ink);font-weight:600}
+.src{display:inline-flex;align-items:center;gap:6px}
+.card-body{padding:22px 18px 20px;display:flex;flex-direction:column;gap:18px}
+.qtext{margin:0;font-family:var(--f-display);font-weight:600;font-size:clamp(1.2rem,3.2vw,1.45rem);line-height:1.3;letter-spacing:-.01em;text-wrap:pretty;max-width:60ch}
+.qtext:focus{outline:none}
+code{font-family:var(--f-mono);font-size:.86em;background:var(--surface-2);border:1px solid var(--line);border-radius:4px;padding:.05em .35em;overflow-wrap:anywhere}
+
+.codes{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:10px}
+.code{margin:0;border:1px solid var(--line);border-radius:8px;background:var(--code-bg);overflow:hidden;min-width:0;grid-column:1/-1}
+.code.half{grid-column:auto}
+.code figcaption{display:flex;justify-content:space-between;gap:12px;font-family:var(--f-mono);font-size:11.5px;color:var(--muted);padding:6px 12px;border-bottom:1px solid var(--line)}
+.code pre{margin:0;padding:10px 0;overflow-x:auto;font-family:var(--f-mono);font-size:13.5px;line-height:1.6;counter-reset:ln}
+.code pre code{display:block;min-width:max-content;background:none;border:0;padding:0;font-size:inherit;overflow-wrap:normal}
+.ln{display:block;white-space:pre;padding-right:16px}
+.ln::before{counter-increment:ln;content:counter(ln);display:inline-block;width:2.6em;padding-right:1em;text-align:right;color:var(--t-com);user-select:none}
+.hl-t,.hl-sel{color:var(--t-tag)} .hl-a{color:var(--t-attr)} .hl-s{color:var(--t-str)} .hl-p{color:var(--t-prop)}
+.hl-c{color:var(--t-com);font-style:italic} .hl-pn{color:var(--t-com)}
+
+.opts{display:grid;gap:8px}
+.opt{appearance:none;font:inherit;color:var(--ink);text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:11px 14px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;cursor:pointer;transition:border-color .12s,background-color .12s}
+.opt:hover:not([aria-disabled="true"]){border-color:var(--accent);background:var(--accent-soft)}
+.opt[aria-disabled="true"]{cursor:default}
+.key{font-family:var(--f-mono);font-size:12px;font-weight:600;width:26px;height:26px;border-radius:6px;border:1px solid var(--line);display:grid;place-items:center;color:var(--muted);background:var(--surface-2)}
+.note{font-family:var(--f-mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)}
+.opt.right .key{background:var(--ok);border-color:var(--ok);color:var(--surface)}
+.opt.right .note{color:var(--ok)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opt.wrong .key{background:var(--bad);border-color:var(--bad);color:var(--surface)}
+.opt.wrong .note{color:var(--bad)}
+.opt.dim{opacity:.6}
+
+.fb{border-radius:9px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.fb.good{background:var(--ok-soft)} .fb.miss{background:var(--bad-soft)}
+.verdict{margin:0;font-family:var(--f-display);font-weight:700;font-size:1.1rem}
+.fb.good .verdict{color:var(--ok)} .fb.miss .verdict{color:var(--bad)}
+.ex{margin:0;max-width:68ch}
+.ex code{background:var(--surface)}
+.pv{display:flex;flex-direction:column;gap:6px;min-width:0}
+.pv-label{font-family:var(--f-mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.pv-frame{border:1px solid var(--line);border-radius:7px;overflow:auto;background:var(--page-bg);color:var(--page-fg)}
+.ref{margin:0;font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+
+.card-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 18px;border-top:1px solid var(--line);background:var(--surface-2)}
+.hint{font-family:var(--f-mono);font-size:11.5px;color:var(--muted);text-align:center}
+@media (max-width:560px){.hint{display:none}}
+.btn{appearance:none;font:inherit;font-size:15px;font-weight:700;line-height:1.2;padding:10px 16px;border-radius:8px;border:1px solid var(--accent);background:var(--accent);color:var(--on-accent);cursor:pointer}
+.btn:hover:not(:disabled){filter:brightness(1.08)}
+.btn.sec{background:transparent;color:var(--ink);border-color:var(--line);font-weight:400}
+.btn.sec:hover:not(:disabled){border-color:var(--ink);filter:none}
+.btn:disabled{opacity:.4;cursor:default}
+
+/* results */
+.res{padding:26px 18px;display:flex;flex-direction:column;gap:24px}
+.res-eyebrow{margin:0 0 6px;font-family:var(--f-mono);font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.res-score{margin:0;font-family:var(--f-display);font-weight:800;font-size:clamp(2.6rem,9vw,4rem);line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.res-score:focus{outline:none}
+.res-score span{color:var(--muted);font-weight:500;font-size:.55em}
+.res-msg{margin:10px 0 0;color:var(--muted);max-width:60ch}
+.bd{display:grid;gap:10px}
+.bd-row{display:grid;grid-template-columns:150px minmax(0,1fr) 64px;gap:12px;align-items:center;font-size:14px}
+@media (max-width:480px){.bd-row{grid-template-columns:118px minmax(0,1fr) 54px}}
+.bd-name{display:inline-flex;align-items:center;gap:7px}
+.bar{height:8px;border-radius:999px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ok)}
+.bd-n{font-family:var(--f-mono);text-align:right;font-variant-numeric:tabular-nums}
+.res h3{margin:0 0 10px;font-family:var(--f-display);font-size:1.05rem;font-weight:700}
+.missed{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.missed button{appearance:none;width:100%;text-align:left;font:inherit;font-size:15px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;cursor:pointer}
+.missed button:hover{border-color:var(--bad)}
+.mq{font-family:var(--f-mono);font-size:12px;color:var(--bad);padding-top:3px}
+.none{margin:0;color:var(--muted)}
+.actions{display:flex;flex-wrap:wrap;gap:10px}
+
+@media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <p class="cmt">&lt;!-- EC3405 · GUI Programming · University of Ruhuna --&gt;</p>
+    <h1><span class="h-html">HTML</span> <span class="h-amp">&amp;</span> <span class="h-css">CSS</span> Quiz</h1>
+    <p class="intro">50 questions: 18 from the HTML lecture, 20 from the CSS lecture and 12 that go a step past the slides. Every answer comes with an explanation, and many show the code drawn the way a browser renders it. Your answers are saved in this browser as you go, so reloading the page keeps your progress.</p>
+  </header>
+
+  <div class="toolbar">
+    <div class="chips" id="chips" role="group" aria-label="Question set"></div>
+    <div class="tools">
+      <button class="toggle" id="shuffleBtn" aria-pressed="false" type="button"><span class="sw" aria-hidden="true"></span>Shuffle</button>
+      <button class="reset" id="resetBtn" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 8a5.5 5.5 0 1 0 1.7-4"/><path d="M2.5 2.5v3.2h3.2"/></svg><span id="resetLabel">Reset quiz</span></button>
+      <button class="cancel" id="cancelReset" type="button" hidden>Cancel</button>
+    </div>
+  </div>
+
+  <section class="progress" aria-label="Progress">
+    <ol class="map" id="map"></ol>
+    <div class="score" id="score" aria-live="polite"></div>
+  </section>
+  <p class="saved busy" id="saved" aria-live="polite"><i class="dot"></i><span id="savedText">Loading your saved progress…</span></p>
+
+  <main id="main"></main>
+</div>
+
+<script>
+const GLOBAL_CSS={lang:'css',file:'global-styles.css',half:true,lines:['p {','  color: green;','  font-size: 16px;','  line-height: 1.6;','}']};
+const LOCAL_CSS={lang:'css',file:'local-styles.css',half:true,lines:['p {','  color: red;','  font-weight: bold;','}']};
+
+const Q=[
+/* ---------- HTML lecture ---------- */
+{id:'h1',src:'html',topic:'Basics',ref:'What is HTML?',
+ q:'What does HTML stand for?',
+ opts:['Hyper Text Markup Language','High-level Text Machine Language','Hyperlink and Text Management Language','Home Tool Markup Language'],a:0,
+ ex:'HTML is the Hyper Text Markup Language. It’s called a markup language rather than a programming language because it describes the structure of content instead of running logic. The browser reads it and displays the page. Files use the `.html` extension.'},
+{id:'h2',src:'html',topic:'Elements',ref:'Fundamentals of HTML',
+ q:'In this element, what is `class`?',
+ code:{lang:'html',lines:['<button class="btn">Click Me</button>']},
+ opts:['The start tag','An attribute','The value','The content'],a:1,
+ ex:'`<button class="btn">` is the start tag, `class` is the attribute, `"btn"` is its value, `Click Me` is the content and `</button>` is the end tag. Attributes always go inside the start tag.'},
+{id:'h3',src:'html',topic:'Structure',ref:'HTML Structure',
+ q:'Which part of an HTML document holds the content that is visible on the page?',
+ opts:['`<head>`','`<title>`','`<body>`','`<meta>`'],a:2,
+ ex:'Everything between `<body>` and `</body>` is visible page content. The `<head>` holds information about the page, such as the `<title>` shown in the browser tab. In the lecture’s structure diagram the head is the optional part and the body is the compulsory part.'},
+{id:'h4',src:'html',topic:'Empty elements',ref:'Empty Elements',
+ q:'Which of these is an empty element, written without an end tag?',
+ opts:['`<p>`','`<li>`','`<br>`','`<h2>`'],a:2,
+ ex:'Empty elements have no content, so they have no end tag. The lecture lists `<img>`, `<br>`, `<hr>` and `<link>` as examples.'},
+{id:'h5',src:'html',topic:'Headings',ref:'Heading Tags',
+ q:'There are six heading elements. Which one prints the smallest heading?',
+ opts:['`<h1>`','`<h6>`','`<small>`','`<h0>`'],a:1,
+ ex:'`<h1>` is the largest heading and `<h6>` the smallest. `<small>` is a text-formatting tag, not a heading, and `<h0>` doesn’t exist.',
+ pv:'<h1 style="margin:0 0 4px">h1 heading</h1><h3 style="margin:0 0 4px">h3 heading</h3><h6 style="margin:0">h6 heading</h6>'},
+{id:'h6',src:'html',topic:'Tags',ref:'HTML Tags',
+ q:'A page uses `<P>` in one place and `<p>` in another. What happens?',
+ opts:['Both make paragraphs, because HTML tags are not case sensitive','Only `<p>` works; `<P>` is shown as plain text','The browser refuses to load the page','`<P>` makes a larger paragraph'],a:0,
+ ex:'HTML tags are not case sensitive, so `<P>` and `<p>` mean the same thing. Lowercase is the usual convention, and it’s what you should write.'},
+{id:'h7',src:'html',topic:'Text formatting',ref:'Text Formatting Tags',
+ q:'Which markup displays the chemical formula H₂O correctly?',
+ opts:['`H<sup>2</sup>O`','`H<sub>2</sub>O`','`H<small>2</small>O`','`H<mark>2</mark>O`'],a:1,
+ ex:'`<sub>` drops the text below the baseline (subscript). `<sup>` raises it (superscript), which you would use for something like x².',
+ pv:'<p style="font-size:24px;margin:0">H<sub>2</sub>O <span style="font:13px monospace;color:#555">&lt;sub&gt;</span></p><p style="font-size:24px;margin:8px 0 0">H<sup>2</sup>O <span style="font:13px monospace;color:#555">&lt;sup&gt;</span></p>'},
+{id:'h8',src:'html',topic:'Attributes',ref:'HTML Attributes',
+ q:'The lecture splits attributes into three types. Which type does `onclick` belong to?',
+ opts:['Optional attributes','Standard attributes','Event attributes','Empty attributes'],a:2,
+ ex:'`onclick`, `onmouseover` and `onmouseout` are event attributes: they run something when the user interacts with the element. The standard attributes are `id`, `class`, `title` and `style`.'},
+{id:'h9',src:'html',topic:'Links',ref:'Link Target Attribute',
+ q:'Which `target` value opens this link in a new window or tab?',
+ code:{lang:'html',lines:['<a href="https://www.w3schools.com/" target="?">Visit W3Schools!</a>']},
+ opts:['`_self`','`_blank`','`_parent`','`_top`'],a:1,
+ ex:'`_blank` opens a new window or tab. `_self` (the default) opens in the same tab, `_parent` in the parent frame and `_top` in the full body of the window.'},
+{id:'h10',src:'html',topic:'Images',ref:'HTML Images',
+ q:'What is the `alt` attribute of `<img>` for?',
+ opts:['It sets how the image is aligned','It gives alternate text, shown if the image can’t load and read aloud by screen readers','It sets the tooltip that appears on hover','It adds a border around the image'],a:1,
+ ex:'`alt` defines alternate text for the image. Browsers show it when the image fails to load, and screen readers read it to people who can’t see the image. The hover tooltip comes from `title`.'},
+{id:'h11',src:'html',topic:'Lists',ref:'Ordered List',
+ q:'How are the items of this list numbered?',
+ code:{lang:'html',lines:['<ol type="i">','  <li>Coffee</li>','  <li>Tea</li>','  <li>Milk</li>','</ol>']},
+ opts:['1, 2, 3','a, b, c','i, ii, iii','I, II, III'],a:2,
+ ex:'`type="i"` gives lowercase Roman numerals. `"1"` is the default Arabic numbering, `"a"` and `"A"` give letters, and `"I"` gives uppercase Roman numerals.',
+ pv:'<ol type="i" style="margin:0"><li>Coffee</li><li>Tea</li><li>Milk</li></ol>'},
+{id:'h12',src:'html',topic:'Lists',ref:'Definition List',
+ q:'In a definition list, which tag holds the description of a term?',
+ code:{lang:'html',lines:['<dl>','  <dt>Coffee</dt>','  <dd>black hot drink</dd>','</dl>']},
+ opts:['`<dl>`','`<dt>`','`<dd>`','`<li>`'],a:2,
+ ex:'`<dl>` wraps the whole definition list, `<dt>` is the term and `<dd>` describes it. Browsers indent each `<dd>` under its term.',
+ pv:'<dl style="margin:0"><dt>Coffee</dt><dd>black hot drink</dd><dt>Milk</dt><dd>white cold drink</dd></dl>'},
+{id:'h13',src:'html',topic:'Tables',ref:'Rowspan and Colspan',
+ q:'Why does the third row of this table have only two `<td>` cells?',
+ code:{lang:'html',lines:['<table border="1">','  <tr>','    <td colspan="2">Header 1</td>','    <td>Header 2</td>','  </tr>','  <tr>','    <td rowspan="2">Row 1, Col 1</td>','    <td>Row 1, Col 2</td>','    <td>Row 1, Col 3</td>','  </tr>','  <tr>','    <td>Row 2, Col 2</td>','    <td>Row 2, Col 3</td>','  </tr>','</table>']},
+ opts:['It’s a mistake, so the browser leaves a gap','The `rowspan="2"` cell from the row above already fills column 1','`colspan="2"` in the first row removed a column','A row can never hold more than two cells'],a:1,
+ ex:'`rowspan="2"` makes "Row 1, Col 1" stretch down into the next row, so that row only needs cells for columns 2 and 3. `colspan` does the same thing sideways, across columns.',
+ pv:'<table border="1"><tr><td colspan="2">Header 1</td><td>Header 2</td></tr><tr><td rowspan="2">Row 1, Col 1</td><td>Row 1, Col 2</td><td>Row 1, Col 3</td></tr><tr><td>Row 2, Col 2</td><td>Row 2, Col 3</td></tr></table>'},
+{id:'h14',src:'html',topic:'Tables',ref:'cellpadding and cellspacing',
+ q:'What does the `cellspacing` attribute of `<table>` control?',
+ opts:['The space between a cell’s content and its border','The space between neighbouring cells','The thickness of the border','The width of the whole table'],a:1,
+ ex:'`cellspacing` is the gap between cells. `cellpadding` is the space between a cell’s content and the cell wall. In modern pages both are done in CSS, with `border-spacing` on the table and `padding` on the cells.',
+ pv:'<div style="display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start"><div><div style="font:12px monospace;margin-bottom:6px">cellpadding="15"</div><table border="1" cellpadding="15"><tr><th>NAME</th><th>AGE</th></tr><tr><td>RAM</td><td>21</td></tr></table></div><div><div style="font:12px monospace;margin-bottom:6px">cellspacing="15"</div><table border="1" cellspacing="15"><tr><th>NAME</th><th>AGE</th></tr><tr><td>RAM</td><td>21</td></tr></table></div></div>'},
+{id:'h15',src:'html',topic:'Forms',ref:'Radio Buttons',
+ q:'A form asks for gender, Male or Female, and the user must pick exactly one. Which input type fits?',
+ opts:['`type="checkbox"`','`type="radio"`','`type="text"`','`type="submit"`'],a:1,
+ ex:'Radio buttons let the user select ONE of a limited number of choices. Give every radio in the group the same `name`, so choosing one clears the others. Checkboxes allow zero or more choices.',
+ pv:'<form>Gender:<br><label><input type="radio" name="g" value="male"> Male</label><br><label><input type="radio" name="g" value="female"> Female</label></form>'},
+{id:'h16',src:'html',topic:'Forms',ref:'Password Input Controls',
+ q:'What does `<input type="password">` change compared with a normal text field?',
+ opts:['The characters are masked as the user types','The value is encrypted before it is sent','The field becomes required','The browser checks the password strength'],a:0,
+ ex:'A password field only hides the characters on screen. It doesn’t encrypt anything; protecting the value on its way to the server is the job of HTTPS.',
+ pv:'<label>Password: <input type="password" value="gui2026"></label>'},
+{id:'h17',src:'html',topic:'Forms',ref:'Drop Down Box',
+ q:'Which pair of tags builds a drop-down box?',
+ opts:['`<list>` and `<item>`','`<select>` and `<option>`','`<dropdown>` and `<choice>`','`<ul>` and `<li>`'],a:1,
+ ex:'`<select>` creates the drop-down and each `<option>` is one entry. An option’s `value` is what gets sent with the form.',
+ pv:'<select><option value="Subject">Select a Subject</option><option value="Maths">Maths</option><option value="Physics">Physics</option></select>'},
+{id:'h18',src:'html',topic:'Comments',ref:'HTML Comments',
+ q:'Which line is a valid HTML comment?',
+ opts:['`// This is a comment`','`/* This is a comment */`','`<!-- This is a comment -->`','`# This is a comment`'],a:2,
+ ex:'HTML comments start with `<!--` and end with `-->`. The browser ignores them and doesn’t display them. `/* */` is the comment syntax inside CSS.'},
+
+/* ---------- CSS lecture ---------- */
+{id:'c1',src:'css',topic:'Syntax',ref:'CSS Syntax',
+ q:'In this rule, what is `color`?',
+ code:{lang:'css',lines:['h1 { color: blue; font-size: 12px; }']},
+ opts:['The selector','A property','A value','The declaration block'],a:1,
+ ex:'`h1` is the selector, `color` and `font-size` are properties, and `blue` and `12px` are their values. Everything inside the curly braces is the declaration block.'},
+{id:'c2',src:'css',topic:'Syntax',ref:'CSS Syntax',
+ q:'Inside a declaration block, what separates one declaration from the next?',
+ opts:['A comma `,`','A colon `:`','A semicolon `;`','A full stop `.`'],a:2,
+ ex:'Declarations are separated by semicolons. A colon separates a property from its value, curly braces surround the block, and commas are used to group selectors.'},
+{id:'c3',src:'css',topic:'Inserting CSS',ref:'Ways to Insert CSS',
+ q:'Which way of adding CSS is this?',
+ code:{lang:'html',lines:['<h1 style="color:blue;text-align:center;">This is a heading</h1>']},
+ opts:['External style sheet','Internal style sheet','Inline style','Browser default'],a:2,
+ ex:'The `style` attribute makes this an inline style, which applies to that one element only. An internal style sheet goes inside `<style>` in the `<head>`, and an external one lives in a separate `.css` file linked with `<link>`.',
+ pv:'<h1 style="color:blue;text-align:center;margin:0">This is a heading</h1>'},
+{id:'c4',src:'css',topic:'Inserting CSS',ref:'Ways to Insert CSS',
+ q:'Which line correctly links an external style sheet called `style.css`?',
+ opts:['`<style src="style.css">`','`<link rel="stylesheet" href="style.css">`','`<stylesheet>style.css</stylesheet>`','`<css href="style.css">`'],a:1,
+ ex:'External style sheets are linked with the `<link>` element inside `<head>`. `rel="stylesheet"` says what the file is and `href` gives its path.'},
+{id:'c5',src:'css',topic:'Cascade',ref:'Cascading Order',
+ q:'According to the cascading order in the lecture, which style has the highest priority?',
+ opts:['Browser default','External style sheet','Internal style sheet','Inline style'],a:3,
+ ex:'From highest to lowest: inline style, then external and internal style sheets in the head, then the browser default. So an inline style overrides the others.'},
+{id:'c6',src:'css',topic:'Cascade',ref:'Task 01',
+ q:'The page links two style sheets in this order. How do its paragraphs look?',
+ code:[{lang:'html',lines:['<head>','  <link rel="stylesheet" href="global-styles.css">','  <link rel="stylesheet" href="local-styles.css">','</head>']},GLOBAL_CSS,LOCAL_CSS],
+ opts:['Green, 16px, normal weight, because the global file wins','Red and bold, with the 16px size and 1.6 line height from the global file','Red and bold, and the global file is ignored completely','Green and bold'],a:1,
+ ex:'Both rules target `p`, so their declarations combine. Only `color` is set twice, and the file linked last wins that conflict, so the text is red. `font-weight: bold` comes from the local file, while `font-size` and `line-height` still come from the global one.',
+ pv:'<style>p{margin:0;color:green;font-size:16px;line-height:1.6}p{color:red;font-weight:bold}</style><p>This paragraph gets styles from both files. The line height comes from global-styles.css.</p>'},
+{id:'c7',src:'css',topic:'Cascade',ref:'Multiple Style Sheets',
+ q:'Now the links are swapped, so `local-styles.css` comes first. What color and weight are the paragraphs?',
+ code:[{lang:'html',lines:['<head>','  <link rel="stylesheet" href="local-styles.css">','  <link rel="stylesheet" href="global-styles.css">','</head>']},GLOBAL_CSS,LOCAL_CSS],
+ opts:['Red and bold','Green and bold','Green and normal weight','Black, the browser default'],a:1,
+ ex:'The global file is read last now, so its `color: green` wins. Nothing contradicts `font-weight: bold`, so the paragraphs stay bold. Link order only decides properties that are set more than once.',
+ pv:'<style>p{margin:0;color:red;font-weight:bold}p{color:green;font-size:16px;line-height:1.6}</style><p>Same two files, opposite order.</p>'},
+{id:'c8',src:'css',topic:'Selectors',ref:'The CSS id Selector',
+ q:'Which selector targets `<p id="p3">`?',
+ opts:['`.p3`','`#p3`','`p3`','`*p3`'],a:1,
+ ex:'An id selector is a hash `#` followed by the id. A dot `.` is for classes.'},
+{id:'c9',src:'css',topic:'Selectors',ref:'Choosing Between Classes and IDs',
+ q:'Which statement about ids and classes is correct?',
+ opts:['An id should be on one element only; a class can be shared by many elements','A class can be used only once per page; an id can be reused','Ids and classes are interchangeable, so it doesn’t matter which you use','Classes start with `#` and ids start with `.`'],a:0,
+ ex:'An id is unique within a page, so it selects one element. A class marks a group of elements that share a style. The lecture’s rule of thumb: use a class when the style might be reused, and an id when it belongs to a single element.'},
+{id:'c10',src:'css',topic:'Selectors',ref:'CSS Selectors',
+ q:'What does the selector `p.center` match?',
+ opts:['Every element with `class="center"`','Only `<p>` elements that have `class="center"`','All `<p>` elements, plus all `.center` elements','A `<p>` inside an element with class `center`'],a:1,
+ ex:'Writing the element name directly before the class, with no space, narrows the class to that element type. An `<h3 class="center">` would not match `p.center`.'},
+{id:'c11',src:'css',topic:'Selectors',ref:'CSS Universal Selector',
+ q:'Which elements does the selector `*` select?',
+ opts:['Only the `<body>`','Every element on the page','Only elements without a class','Only the first element'],a:1,
+ ex:'`*` is the universal selector. A rule like `* { color: blue; }` affects every HTML element on the page.'},
+{id:'c12',src:'css',topic:'Selectors',ref:'CSS Grouping Selector',
+ q:'What do the commas do in this rule?',
+ code:{lang:'css',lines:['h1, h2, p {','  text-align: center;','  color: red;','}']},
+ opts:['Select `p` elements inside `h2` inside `h1`','Apply the same declarations to `h1`, `h2` and `p` elements','Cause a syntax error','Apply the rule only to whichever element appears first'],a:1,
+ ex:'Commas group selectors. This one rule replaces three identical rules for `h1`, `h2` and `p`, which keeps the code shorter.',
+ pv:'<style>h1,h2,p{text-align:center;color:red;margin:4px 0}</style><h1>Heading 1</h1><h2>Heading 2</h2><p>A paragraph</p>'},
+{id:'c13',src:'css',topic:'Counters',ref:'Task 02',
+ q:'With this CSS, which label appears before "Advanced Selectors"?',
+ code:[{lang:'css',lines:['body { counter-reset: main-topic; }','.main-topic { counter-reset: sub-topic; }','.main-topic::before {','  counter-increment: main-topic;','  content: counter(main-topic) ". ";','}','.sub-topic::before {','  counter-increment: sub-topic;','  content: counter(main-topic) ". " counter(sub-topic) " ";','}']},
+       {lang:'html',lines:['<h3 class="main-topic">CSS syntax</h3>','<h3 class="sub-topic">CSS Selectors</h3>','<h3 class="main-topic">More CSS</h3>','<h3 class="sub-topic">Advanced Selectors</h3>']}],
+ opts:['1. 2','2. 1','2. 2','1. 1'],a:1,
+ ex:'Each `.main-topic` adds 1 to `main-topic` and resets `sub-topic` to 0. "More CSS" is main topic 2, so the sub-topic after it starts again from 1, giving "2. 1".',
+ pv:'<style>.page{counter-reset:main-topic}.main-topic{counter-reset:sub-topic}.main-topic::before{counter-increment:main-topic;content:counter(main-topic) ". "}.sub-topic::before{counter-increment:sub-topic;content:counter(main-topic) ". " counter(sub-topic) " ";font-style:italic}h3{margin:6px 0}</style><div class="page"><h3 class="main-topic">CSS syntax</h3><h3 class="sub-topic">CSS Selectors</h3><h3 class="main-topic">More CSS</h3><h3 class="sub-topic">Advanced Selectors</h3></div>'},
+{id:'c14',src:'css',topic:'Pseudo-elements',ref:'Task 02',
+ q:'A `::before` rule shows nothing on screen unless it sets which property?',
+ opts:['`display`','`content`','`counter-increment`','`visibility`'],a:1,
+ ex:'A `::before` pseudo-element is only generated when `content` is set. In Task 02 it’s `content: counter(main-topic) ". "` that actually puts the number on the page; `counter-increment` alone only changes the counter.'},
+{id:'c15',src:'css',topic:'Colors',ref:'CSS Colors',
+ q:'Which `rgb()` value is the same color as `#ff6347`?',
+ opts:['`rgb(255, 99, 71)`','`rgb(255, 63, 47)`','`rgb(99, 255, 71)`','`rgb(15, 6, 3)`'],a:0,
+ ex:'Each pair of hex digits is one channel from 00 to ff (0 to 255): ff = 255, 63 = 6×16 + 3 = 99, 47 = 4×16 + 7 = 71. This is the named color Tomato, which the lecture also writes as `hsl(9, 100%, 64%)`.',
+ pv:'<div style="display:flex;gap:10px;flex-wrap:wrap;font:12px monospace"><div><div style="width:110px;height:44px;background:#ff6347;border-radius:4px"></div>#ff6347</div><div><div style="width:110px;height:44px;background:rgb(255,99,71);border-radius:4px"></div>rgb(255, 99, 71)</div><div><div style="width:110px;height:44px;background:Tomato;border-radius:4px"></div>Tomato</div></div>'},
+{id:'c16',src:'css',topic:'Colors',ref:'HSL',
+ q:'What color is `hsl(240, 100%, 50%)`?',
+ opts:['Red','Green','Blue','Gray'],a:2,
+ ex:'Hue is an angle on the color wheel: 0 is red, 120 is green and 240 is blue. Saturation 100% is the full color and lightness 50% is neither light nor dark. Dropping saturation to 0% would turn any hue gray.',
+ pv:'<div style="display:flex;gap:10px;flex-wrap:wrap;font:12px monospace"><div><div style="width:96px;height:40px;background:hsl(0,100%,50%);border-radius:4px"></div>hue 0</div><div><div style="width:96px;height:40px;background:hsl(120,100%,50%);border-radius:4px"></div>hue 120</div><div><div style="width:96px;height:40px;background:hsl(240,100%,50%);border-radius:4px"></div>hue 240</div><div><div style="width:96px;height:40px;background:hsl(240,0%,50%);border-radius:4px"></div>240, 0% sat</div></div>'},
+{id:'c17',src:'css',topic:'Opacity',ref:'Opacity / Transparency',
+ q:'You want a `div` with a 30% see-through green background, but its text must stay fully solid. Which declaration does that?',
+ opts:['`opacity: 0.3;`','`background: rgba(0, 128, 0, 0.3);`','`color: rgba(0, 128, 0, 0.3);`','`background-opacity: 0.3;`'],a:1,
+ ex:'`opacity` fades the whole element, including its text and children. An RGBA background makes only the background color transparent. `background-opacity` is not a CSS property.',
+ pv:'<div style="background:repeating-linear-gradient(45deg,#ddd 0 10px,#fff 10px 20px);padding:10px;display:grid;gap:8px"><div style="background-color:green;opacity:.3;padding:10px;color:#000;font-weight:bold">opacity: 0.3 (the text fades too)</div><div style="background:rgba(0,128,0,.3);padding:10px;color:#000;font-weight:bold">rgba(0, 128, 0, 0.3) (the text stays solid)</div></div>'},
+{id:'c18',src:'css',topic:'Backgrounds',ref:'Background Image & Repeat',
+ q:'By default a background image repeats to cover the element. Which value shows it only once?',
+ opts:['`background-repeat: repeat-x;`','`background-repeat: repeat-y;`','`background-repeat: no-repeat;`','`background-repeat: once;`'],a:2,
+ ex:'`no-repeat` shows the image a single time. `repeat-x` tiles it horizontally and `repeat-y` vertically. `once` is not a valid value.'},
+{id:'c19',src:'css',topic:'Backgrounds',ref:'Shorthand property',
+ q:'In this shorthand, which longhand property does `right top` set?',
+ code:{lang:'css',lines:['body {','  background: #ffffff url("img_tree.png") no-repeat right top;','}']},
+ opts:['`background-repeat`','`background-position`','`background-attachment`','`background-size`'],a:1,
+ ex:'The shorthand bundles `background-color` (#ffffff), `background-image` (the url), `background-repeat` (no-repeat) and `background-position` (right top) into one declaration.'},
+{id:'c20',src:'css',topic:'Units',ref:'Notes',
+ q:'Why does `margin-left: 20 px;` not work?',
+ opts:['`px` isn’t a valid CSS unit','There must be no space between the number and the unit','Margins only accept percentages','It works fine'],a:1,
+ ex:'Write `20px` with no space. With the space the browser can’t read the value, so it drops the whole declaration.'},
+
+/* ---------- Beyond the slides ---------- */
+{id:'e1',src:'extra',topic:'Box model',ref:'builds on margin and padding',
+ q:'In the CSS box model, what is the order of the layers from the inside out?',
+ opts:['Content → padding → border → margin','Content → margin → border → padding','Padding → content → border → margin','Border → padding → content → margin'],a:0,
+ ex:'Padding is the space inside the border, around the content. Margin is the space outside the border that pushes other elements away. The element’s background shows through the padding but never the margin.',
+ pv:'<div style="background:#f9cc9d;padding:8px 12px 12px;font:12px monospace;color:#000">margin<div style="background:#fddd9b;padding:6px 12px 12px;margin-top:4px">border<div style="background:#c3d08b;padding:6px 12px 12px;margin-top:4px">padding<div style="background:#8cb6c0;padding:14px;margin-top:4px;text-align:center">content</div></div></div></div>'},
+{id:'e2',src:'extra',topic:'Specificity',ref:'builds on id and class selectors',
+ q:'All three rules are in the same style sheet. What color is the paragraph?',
+ code:[{lang:'css',half:true,lines:['#p3     { color: gray; }','.center { color: blue; }','p       { color: red; }']},
+       {lang:'html',half:true,lines:['<p id="p3" class="center">','  Which color am I?','</p>']}],
+ opts:['Red, because it’s the last rule','Blue, because classes beat ids','Gray, because the id selector is the most specific','Black, because the rules cancel out'],a:2,
+ ex:'When rules conflict, the more specific selector wins before order is considered: an id beats a class, and a class beats an element name. Order only decides between selectors of equal specificity.',
+ pv:'<style>#p3{color:gray}.center{color:blue}p{color:red;font-size:20px;margin:0}</style><p id="p3" class="center">Which color am I?</p>'},
+{id:'e3',src:'extra',topic:'Cascade',ref:'builds on Cascading Order',
+ q:'The style sheet says `p { color: green !important; }` and the paragraph has `style="color: red"`. What color is the text?',
+ opts:['Red, because inline styles always win','Green, because `!important` overrides normal inline styles','Black, because the two conflict','Half red, half green'],a:1,
+ ex:'`!important` is the exception to the lecture’s cascading order. It lifts a declaration above normal ones, inline styles included. Use it sparingly, because it makes styles hard to override later.',
+ pv:'<style>p{color:green !important;font-size:20px;margin:0}</style><p style="color:red">Which color am I?</p>'},
+{id:'e4',src:'extra',topic:'Pseudo-classes',ref:'builds on CSS Selectors',
+ q:'Which selector styles a link only while the mouse pointer is over it?',
+ opts:['`a::hover`','`a:hover`','`a.hover`','`a#hover`'],a:1,
+ ex:'`:hover` is a pseudo-class, written with one colon, that matches an element in a particular state. `::before` and `::after` use two colons because they are pseudo-elements, which generate content.',
+ pv:'<style>a.demo{color:#0645ad;text-decoration:underline;cursor:pointer;font-size:18px;padding:2px 4px}a.demo:hover{color:#b3261e;background:#ffe9a8;text-decoration:none}</style><a class="demo">Hover over this link</a>'},
+{id:'e5',src:'extra',topic:'Combinators',ref:'builds on CSS Selectors',
+ q:'What is the difference between `div p` and `div > p`?',
+ opts:['There is no difference','`div p` matches a `p` inside a `div` at any depth; `div > p` only matches direct children','`div > p` matches any depth; `div p` only matches direct children','`div p` selects every `div` and every `p`, like a comma'],a:1,
+ ex:'A space is the descendant combinator, which matches at any depth. `>` is the child combinator: the `p` must sit directly inside the `div`.'},
+{id:'e6',src:'extra',topic:'Units',ref:'builds on font-size',
+ q:'The root font size is 16px. How large is `1.5rem`?',
+ opts:['1.5px','16px','24px','150px'],a:2,
+ ex:'`rem` is relative to the font size of the root `<html>` element: 1.5 × 16px = 24px. `em` is similar but relative to the element’s own font size, so it compounds when elements are nested.'},
+{id:'e7',src:'extra',topic:'Display',ref:'builds on block and inline tags',
+ q:'Which element is inline by default, sitting inside a line of text instead of starting a new one?',
+ opts:['`<div>`','`<p>`','`<span>`','`<h1>`'],a:2,
+ ex:'`<span>`, `<a>`, `<b>` and `<img>` are inline. `<div>`, `<p>`, headings and lists are block elements: they start on a new line and take the full width. CSS can change this with `display`.',
+ pv:'<style>span{background:#ffe9a8}div{background:#d6e6ff;margin:4px 0;padding:2px 4px}p{margin:0 0 6px}</style><p>Some text with a <span>span inside it</span> that stays on the same line.</p><div>A div starts on its own line,</div><div>and so does the next one.</div>'},
+{id:'e8',src:'extra',topic:'Semantic HTML',ref:'builds on HTML Structure',
+ q:'Which HTML5 element is meant for a page’s main navigation links?',
+ opts:['`<nav>`','`<menu-bar>`','`<navigation>`','`<links>`'],a:0,
+ ex:'HTML5 added semantic elements such as `<header>`, `<nav>`, `<main>`, `<section>`, `<article>` and `<footer>`. They render like a plain `<div>`, but they tell browsers, search engines and screen readers what each part of the page is.'},
+{id:'e9',src:'extra',topic:'Modern HTML',ref:'builds on Font Tag and Text Formatting',
+ q:'The HTML lecture shows `<font>`, `<big>`, `<strike>` and `<tt>`. What is their status in HTML5?',
+ opts:['They are the recommended way to style text','They are obsolete; use CSS such as `font-family` and `text-decoration` instead','They only work inside tables','Screen readers require them'],a:1,
+ ex:'Browsers still render them, but HTML5 marks them obsolete because styling belongs in CSS. `<font>` becomes `font-family`, `font-size` and `color`; `<big>` becomes `font-size`; `<strike>` becomes `<del>` or `text-decoration: line-through`; `<tt>` becomes `<code>` or a monospace font. Attributes like `bgcolor` and `align` have CSS replacements too.'},
+{id:'e10',src:'extra',topic:'Tables with CSS',ref:'builds on Designing Tables using CSS',
+ q:'A table with `border="1"` shows double lines between cells. Which CSS property merges them into single lines?',
+ opts:['`border-collapse: collapse;`','`border-merge: single;`','`border-spacing: none;`','`table-border: 1px;`'],a:0,
+ ex:'Each cell draws its own border, which is what makes the double lines. `border-collapse: collapse` on the `<table>` lets neighbouring cells share one border.',
+ pv:'<div style="display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start"><div><div style="font:12px monospace;margin-bottom:6px">default</div><table border="1"><tr><th>NAME</th><th>AGE</th></tr><tr><td>BITTU</td><td>22</td></tr></table></div><div><div style="font:12px monospace;margin-bottom:6px">border-collapse: collapse</div><table border="1" style="border-collapse:collapse"><tr><th>NAME</th><th>AGE</th></tr><tr><td>BITTU</td><td>22</td></tr></table></div></div>'},
+{id:'e11',src:'extra',topic:'Spacing',ref:'builds on margin-right in Task 04',
+ q:'What does `margin: 10px 20px;` set?',
+ opts:['10px on every side','Top and bottom 10px, left and right 20px','Left and right 10px, top and bottom 20px','Top 10px, right 20px, bottom and left 0'],a:1,
+ ex:'With two values, the first is top and bottom and the second is left and right. With four values the order runs clockwise: top, right, bottom, left.',
+ pv:'<div style="background:#f9cc9d;display:inline-block"><div style="margin:10px 20px;background:#8cb6c0;padding:8px 12px;font:13px monospace;color:#000">margin: 10px 20px</div></div>'},
+{id:'e12',src:'extra',topic:'Fonts',ref:'builds on Font Tag',
+ q:'What does the browser do with `font-family: Arial, Tahoma, sans-serif;`?',
+ opts:['Mixes the three fonts together','Uses the first font in the list that is available on the device','Always uses sans-serif','Uses Arial for headings and Tahoma for paragraphs'],a:1,
+ ex:'The list is a fallback stack: if Arial is missing it tries Tahoma, then any sans-serif font. End the list with a generic family (`serif`, `sans-serif` or `monospace`) so there is always a match.'}
+];
+
+const SRC={html:'HTML lecture',css:'CSS lecture',extra:'Beyond the slides'};
+const byId=Object.fromEntries(Q.map(q=>[q.id,q]));
+const KEY='ec3405-html-css-quiz-v1';
+const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $=s=>document.querySelector(s);
+const pad=n=>String(n).padStart(2,'0');
+const LETTERS='ABCD';
+
+function poolIds(pool){return Q.filter(q=>pool==='all'||q.src===pool).map(q=>q.id);}
+function shuffleArr(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+/* ---------- saving: localStorage + sessionStorage, with an IndexedDB backup ---------- */
+function freshState(){return {pool:'all',shuffle:false,order:poolIds('all'),idx:0,answers:{},view:'q',missed:[]};}
+function validState(s){
+  if(!s||!Array.isArray(s.order)) return null;
+  s.order=s.order.filter(id=>byId[id]);
+  if(!s.order.length) return null;
+  if(!s.answers||typeof s.answers!=='object') s.answers={};
+  for(const k of Object.keys(s.answers)) if(!byId[k]||typeof s.answers[k]!=='number') delete s.answers[k];
+  if(s.pool==='missed'&&!Array.isArray(s.missed)) return null;
+  if(!['all','html','css','extra','missed'].includes(s.pool)) s.pool='all';
+  if(s.view!=='results') s.view='q';
+  s.idx=Math.max(0,Math.min(+s.idx||0,s.order.length-1));
+  return s;
+}
+function parseRec(str){
+  try{
+    const o=typeof str==='string'?JSON.parse(str):str;
+    if(!o) return null;
+    if(o.state) return {t:+o.t||0,state:validState(o.state)};
+    if(o.order) return {t:0,state:validState(o)}; /* older save format */
+  }catch(e){}
+  return null;
+}
+function readSync(){
+  let best=null;
+  for(const get of [()=>localStorage,()=>sessionStorage]){
+    try{const r=parseRec(get().getItem(KEY));if(r&&r.state&&(!best||r.t>best.t)) best=r;}catch(e){}
+  }
+  return best;
+}
+let dbP=null;
+function idb(){
+  if(dbP) return dbP;
+  dbP=new Promise((res,rej)=>{
+    try{
+      const r=indexedDB.open('ec3405-quiz',1);
+      r.onupgradeneeded=()=>r.result.createObjectStore('kv');
+      r.onsuccess=()=>res(r.result);
+      r.onerror=()=>rej(r.error);
+      r.onblocked=()=>rej(new Error('blocked'));
+    }catch(e){rej(e);}
+  });
+  dbP.catch(()=>{});
+  return dbP;
+}
+function idbPut(str){return idb().then(db=>new Promise((res,rej)=>{const tx=db.transaction('kv','readwrite');tx.objectStore('kv').put(str,KEY);tx.oncomplete=()=>res(true);tx.onerror=()=>rej(tx.error);tx.onabort=()=>rej(tx.error);}));}
+function idbGet(){return idb().then(db=>new Promise((res,rej)=>{const r=db.transaction('kv').objectStore('kv').get(KEY);r.onsuccess=()=>res(r.result||null);r.onerror=()=>rej(r.error);}));}
+
+let lastSaveT=0,statusTimer=null,flash='';
+function setStatus(kind){
+  const el=document.getElementById('saved'),tx=document.getElementById('savedText');
+  if(!el) return;
+  el.classList.toggle('warn',kind==='failed');
+  el.classList.toggle('busy',kind==='saving');
+  if(kind==='failed'){tx.textContent='This browser is blocking site storage, so your progress can’t be saved and will be lost on reload.';return;}
+  if(kind==='saving'){tx.textContent='Saving…';return;}
+  const n=Object.keys(S.answers).length;
+  tx.textContent=(flash?flash+' ':'')+(n?'Progress saved in this browser · '+n+' answer'+(n===1?'':'s')+' kept':'Progress saves automatically in this browser');
+}
+let storeOK=false;
+function save(){
+  const t=Date.now();lastSaveT=t;
+  const str=JSON.stringify({v:2,t,state:S});
+  let ok=false;
+  try{localStorage.setItem(KEY,str);ok=true;}catch(e){}
+  try{sessionStorage.setItem(KEY,str);ok=true;}catch(e){}
+  if(ok) storeOK=true;
+  setStatus(storeOK?'saved':'saving');
+  idbPut(str).then(()=>{storeOK=true;setStatus('saved');}).catch(()=>{setStatus(storeOK?'saved':'failed');});
+}
+
+const first=readSync();
+let S=(first&&first.state)||freshState();
+lastSaveT=first?first.t:0;
+
+/* ---------- text + code rendering ---------- */
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function rich(s){return esc(s).replace(/`([^`]+)`/g,'<code>$1</code>');}
+
+function hlAttrs(s){
+  let out='',last=0,m;const re=/([a-zA-Z-]+)(=)("[^"]*"|[^\s"]+)/g;
+  while((m=re.exec(s))){out+=esc(s.slice(last,m.index))+'<span class="hl-a">'+m[1]+'</span>=<span class="hl-s">'+esc(m[3])+'</span>';last=re.lastIndex;}
+  return out+esc(s.slice(last));
+}
+function hlHTML(line){
+  let out='',last=0,m;const re=/<!--[\s\S]*?-->|<\/?[a-zA-Z][a-zA-Z0-9]*[^>]*>/g;
+  while((m=re.exec(line))){
+    out+=esc(line.slice(last,m.index));
+    const tok=m[0];
+    if(tok.startsWith('<!--')) out+='<span class="hl-c">'+esc(tok)+'</span>';
+    else{
+      const p=/^(<\/?)([a-zA-Z][a-zA-Z0-9]*)([\s\S]*?)(\/?>)$/.exec(tok);
+      out+=p?'<span class="hl-pn">'+esc(p[1])+'</span><span class="hl-t">'+p[2]+'</span>'+hlAttrs(p[3])+'<span class="hl-pn">'+esc(p[4])+'</span>':esc(tok);
+    }
+    last=re.lastIndex;
+  }
+  return out+esc(line.slice(last));
+}
+function hlVal(v){return v.split(/("[^"]*")/).map((p,i)=>i%2?'<span class="hl-s">'+esc(p)+'</span>':esc(p)).join('');}
+function hlDecl(s){
+  let out='',last=0,m;const re=/([a-z-]+)(\s*:\s*)([^;}]*)/g;
+  while((m=re.exec(s))){out+=esc(s.slice(last,m.index))+'<span class="hl-p">'+m[1]+'</span>'+esc(m[2])+hlVal(m[3]);last=re.lastIndex;}
+  return out+esc(s.slice(last));
+}
+function hlCSS(line){
+  if(/^\s*\/\*/.test(line)) return '<span class="hl-c">'+esc(line)+'</span>';
+  const bi=line.indexOf('{');
+  if(bi>=0) return '<span class="hl-sel">'+esc(line.slice(0,bi))+'</span>{'+hlDecl(line.slice(bi+1));
+  return hlDecl(line);
+}
+function codeHTML(q){
+  if(!q.code) return '';
+  const blocks=Array.isArray(q.code)?q.code:[q.code];
+  return '<div class="codes">'+blocks.map(b=>{
+    const file=b.file||(b.lang==='css'?'style.css':'index.html');
+    const hl=b.lang==='css'?hlCSS:hlHTML;
+    return '<figure class="code'+(b.half?' half':'')+'"><figcaption><span>'+esc(file)+'</span><span>'+b.lang.toUpperCase()+'</span></figcaption><pre><code>'+
+      b.lines.map(l=>'<span class="ln">'+(hl(l)||' ')+'</span>').join('')+'</code></pre></figure>';
+  }).join('')+'</div>';
+}
+function mountPreview(el,html){
+  const root=el.attachShadow({mode:'open'});
+  root.innerHTML='<style>:host{all:initial;display:block;background:var(--page-bg);color:var(--page-fg);font:16px/1.4 "Times New Roman",Times,serif;padding:14px 16px}</style>'+html;
+}
+
+/* ---------- state helpers ---------- */
+function stats(){let ok=0,bad=0;for(const id of S.order){if(id in S.answers){if(S.answers[id]===byId[id].a)ok++;else bad++;}}return{ok,bad,left:S.order.length-ok-bad};}
+function placeCursor(){const i=S.order.findIndex(id=>!(id in S.answers));if(i<0){S.idx=0;S.view='results';}else{S.idx=i;S.view='q';}}
+function setPool(k){S.pool=k;const ids=poolIds(k);S.order=S.shuffle?shuffleArr(ids):ids;placeCursor();save();render();}
+
+/* ---------- rendering ---------- */
+function renderChips(){
+  const pools=[['all','All questions'],['html','HTML lecture'],['css','CSS lecture'],['extra','Beyond the slides']];
+  let h=pools.map(([k,l])=>'<button class="chip" type="button" data-pool="'+k+'" aria-pressed="'+(S.pool===k)+'">'+(k!=='all'?'<i class="dot d-'+k+'"></i>':'')+esc(l)+' <span class="ct">'+poolIds(k).length+'</span></button>').join('');
+  if(S.pool==='missed') h+='<button class="chip" type="button" data-pool="missed" aria-pressed="true"><i class="dot d-miss"></i>Missed <span class="ct">'+S.order.length+'</span></button>';
+  $('#chips').innerHTML=h;
+  $('#shuffleBtn').setAttribute('aria-pressed',String(!!S.shuffle));
+}
+function renderMap(){
+  $('#map').innerHTML=S.order.map((id,i)=>{
+    let cls='cell',st='not answered';
+    if(id in S.answers){if(S.answers[id]===byId[id].a){cls+=' ok';st='correct';}else{cls+=' bad';st='wrong';}}
+    const cur=i===S.idx&&S.view==='q';
+    if(cur) cls+=' cur';
+    return '<li><button type="button" class="'+cls+'" data-i="'+i+'" aria-label="Question '+(i+1)+', '+st+'"'+(cur?' aria-current="step"':'')+'>'+(i+1)+'</button></li>';
+  }).join('');
+}
+function renderScore(){
+  const st=stats(),n=S.order.length;
+  $('#score').innerHTML='<div class="score-big">'+st.ok+'<span> / '+n+' correct</span></div>'+
+    '<div class="meter" aria-hidden="true"><i style="width:'+(st.ok/n*100)+'%;background:var(--ok)"></i><i style="width:'+(st.bad/n*100)+'%;background:var(--bad)"></i></div>'+
+    '<div class="score-line"><span><b class="b-ok">'+st.ok+'</b> right</span><span><b class="b-bad">'+st.bad+'</b> wrong</span><span><b>'+st.left+'</b> to go</span></div>';
+}
+function refLine(q){return (q.src==='extra'?'Beyond the slides':SRC[q.src])+' › '+q.ref;}
+
+function questionHTML(){
+  const id=S.order[S.idx],q=byId[id],n=S.order.length;
+  const done=id in S.answers,chosen=done?S.answers[id]:null;
+  const opts=q.opts.map((o,i)=>{
+    let cls='opt',note='';
+    if(done){
+      if(i===q.a){cls+=' right';note=chosen===i?'Correct':'Answer';}
+      else if(i===chosen){cls+=' wrong';note='Your pick';}
+      else cls+=' dim';
+    }
+    return '<button type="button" class="'+cls+'" data-opt="'+i+'"'+(done?' aria-disabled="true"':'')+'><span class="key" aria-hidden="true">'+LETTERS[i]+'</span><span>'+rich(o)+'</span><span class="note">'+note+'</span></button>';
+  }).join('');
+  let fb='';
+  if(done){
+    const good=chosen===q.a;
+    fb='<div class="fb '+(good?'good':'miss')+'" id="fb" role="status">'+
+      '<p class="verdict">'+(good?'Correct.':'Not quite. The answer is '+LETTERS[q.a]+'.')+'</p>'+
+      '<p class="ex">'+rich(q.ex)+'</p>'+
+      (q.pv?'<div class="pv"><span class="pv-label">Rendered in a browser</span><div class="pv-frame" data-pv></div></div>':'')+
+      '<p class="ref">'+esc(refLine(q))+'</p></div>';
+  }
+  const isLast=S.idx===n-1;
+  const other=S.order.findIndex((x,i)=>i!==S.idx&&!(x in S.answers));
+  let nextLabel,nextDis=false;
+  if(!isLast) nextLabel=done?'Next question':'Skip';
+  else if(other>=0) nextLabel='Next unanswered';
+  else {nextLabel='See results';nextDis=!done;}
+  return '<article class="card" id="card">'+
+    '<div class="card-head"><span class="qno">Question '+pad(S.idx+1)+' of '+n+'</span><span class="src"><i class="dot d-'+q.src+'"></i>'+SRC[q.src]+'</span><span>'+esc(q.topic)+'</span></div>'+
+    '<div class="card-body"><h2 class="qtext" id="qtext" tabindex="-1">'+rich(q.q)+'</h2>'+codeHTML(q)+
+    '<div class="opts" role="group" aria-label="Answers">'+opts+'</div>'+fb+'</div>'+
+    '<nav class="card-nav" aria-label="Question navigation"><button type="button" class="btn sec" data-act="prev"'+(S.idx===0?' disabled':'')+'>Previous</button>'+
+    '<span class="hint">A–D to answer · ← → to move</span>'+
+    '<button type="button" class="btn" data-act="next"'+(nextDis?' disabled':'')+'>'+nextLabel+'</button></nav></article>';
+}
+
+function resultsHTML(){
+  const st=stats(),n=S.order.length,pct=Math.round(st.ok/n*100);
+  const msg=pct>=90?'Exam-ready. You know this material well.':pct>=70?'Solid work. Go over the questions you missed below.':pct>=50?'Getting there. Revisit the slides for the topics you missed, then retry them.':'Worth another pass through both lectures before you try again.';
+  const rows=['html','css','extra'].map(s=>{
+    const ids=S.order.filter(id=>byId[id].src===s);if(!ids.length) return '';
+    const ok=ids.filter(id=>S.answers[id]===byId[id].a).length;
+    return '<div class="bd-row"><span class="bd-name"><i class="dot d-'+s+'"></i>'+SRC[s]+'</span><span class="bar"><i style="width:'+(ok/ids.length*100)+'%"></i></span><span class="bd-n">'+ok+' / '+ids.length+'</span></div>';
+  }).join('');
+  const missed=S.order.map((id,i)=>({id,i})).filter(o=>(o.id in S.answers)&&S.answers[o.id]!==byId[o.id].a);
+  const list=missed.length?'<ul class="missed">'+missed.map(o=>'<li><button type="button" data-go="'+o.i+'"><span class="mq">Q'+pad(o.i+1)+'</span><span>'+rich(byId[o.id].q)+'</span></button></li>').join('')+'</ul>':'<p class="none">No mistakes in this set.</p>';
+  return '<section class="card" id="card"><div class="res">'+
+    '<div><p class="res-eyebrow">Results · '+(S.pool==='missed'?'Missed questions':S.pool==='all'?'All questions':SRC[S.pool])+'</p>'+
+    '<h2 class="res-score" id="resTitle" tabindex="-1">'+st.ok+'<span> / '+n+' · '+pct+'%</span></h2><p class="res-msg">'+msg+'</p></div>'+
+    '<div class="bd">'+rows+'</div>'+
+    '<div><h3>'+(missed.length?'Questions to review':'Review')+'</h3>'+list+'</div>'+
+    '<div class="actions">'+(missed.length?'<button type="button" class="btn" data-act="retry">Retry the '+missed.length+' you missed</button>':'')+
+    '<button type="button" class="btn sec" data-act="review">Review from question 1</button>'+
+    '<button type="button" class="btn sec" data-act="restart">Start this set again</button></div>'+
+    '</div></section>';
+}
+
+function render(){
+  renderChips();renderScore();renderMap();
+  const main=$('#main');
+  if(S.view==='results'){main.innerHTML=resultsHTML();return;}
+  main.innerHTML=questionHTML();
+  const q=byId[S.order[S.idx]],el=main.querySelector('[data-pv]');
+  if(el&&q.pv) mountPreview(el,q.pv);
+}
+
+/* ---------- actions ---------- */
+function bringCardIntoView(){
+  const card=$('#card');if(!card) return;
+  const r=card.getBoundingClientRect();
+  if(r.top<0||r.top>innerHeight*0.6) card.scrollIntoView({block:'start',behavior:reduce?'auto':'smooth'});
+}
+function go(i){
+  S.idx=Math.max(0,Math.min(i,S.order.length-1));S.view='q';save();render();
+  bringCardIntoView();const h=$('#qtext');if(h) h.focus({preventScroll:true});
+}
+function answer(i){
+  const id=S.order[S.idx];if(id in S.answers) return;
+  S.answers[id]=i;save();render();
+  const nb=$('#main [data-act="next"]');if(nb&&!nb.disabled) nb.focus({preventScroll:true});
+  const fb=$('#fb');
+  if(fb&&fb.getBoundingClientRect().top>innerHeight-140) fb.scrollIntoView({block:'start',behavior:reduce?'auto':'smooth'});
+}
+function showResults(){
+  S.view='results';save();render();bringCardIntoView();
+  const t=$('#resTitle');if(t) t.focus({preventScroll:true});
+}
+function next(){
+  if(S.view!=='q') return;
+  const n=S.order.length,id=S.order[S.idx];
+  if(S.idx<n-1) return go(S.idx+1);
+  const other=S.order.findIndex((x,i)=>i!==S.idx&&!(x in S.answers));
+  if(other>=0) return go(other);
+  if(id in S.answers) showResults();
+}
+function prev(){
+  if(S.view==='results') return go(S.order.length-1);
+  if(S.idx>0) go(S.idx-1);
+}
+function retry(){
+  const missed=S.order.filter(id=>(id in S.answers)&&S.answers[id]!==byId[id].a);
+  if(!missed.length) return;
+  missed.forEach(id=>delete S.answers[id]);
+  S.missed=missed;S.pool='missed';S.order=S.shuffle?shuffleArr(missed):missed.slice();
+  go(0);
+}
+function restart(){
+  S.order.forEach(id=>delete S.answers[id]);
+  if(S.shuffle) S.order=shuffleArr(S.order);
+  go(0);
+}
+
+$('#chips').addEventListener('click',e=>{
+  const b=e.target.closest('[data-pool]');if(!b) return;
+  const k=b.dataset.pool;if(k===S.pool||k==='missed') return;
+  setPool(k);
+});
+$('#shuffleBtn').addEventListener('click',()=>{
+  S.shuffle=!S.shuffle;
+  const ids=S.pool==='missed'?S.missed:poolIds(S.pool);
+  S.order=S.shuffle?shuffleArr(ids):ids.slice();
+  placeCursor();save();render();
+});
+let armT=null;
+function disarm(){
+  $('#resetBtn').classList.remove('arm');$('#resetLabel').textContent='Reset quiz';
+  $('#cancelReset').hidden=true;clearTimeout(armT);
+}
+$('#resetBtn').addEventListener('click',()=>{
+  const b=$('#resetBtn');
+  if(!b.classList.contains('arm')){
+    b.classList.add('arm');$('#resetLabel').textContent='Yes, clear all 50 answers';
+    $('#cancelReset').hidden=false;clearTimeout(armT);armT=setTimeout(disarm,6000);return;
+  }
+  disarm();
+  S=freshState();
+  flash='Quiz reset.';clearTimeout(statusTimer);statusTimer=setTimeout(()=>{flash='';setStatus('saved');},4000);
+  save();render();
+  window.scrollTo({top:0,behavior:reduce?'auto':'smooth'});
+});
+$('#cancelReset').addEventListener('click',disarm);
+$('#map').addEventListener('click',e=>{const b=e.target.closest('[data-i]');if(b) go(+b.dataset.i);});
+$('#main').addEventListener('click',e=>{
+  const o=e.target.closest('[data-opt]');
+  if(o){if(o.getAttribute('aria-disabled')!=='true') answer(+o.dataset.opt);return;}
+  const a=e.target.closest('[data-act]');
+  if(a){const act=a.dataset.act;
+    if(act==='prev') prev(); else if(act==='next') next(); else if(act==='retry') retry();
+    else if(act==='restart') restart(); else if(act==='review') go(0);
+    return;}
+  const g=e.target.closest('[data-go]');if(g) go(+g.dataset.go);
+});
+document.addEventListener('keydown',e=>{
+  if(e.metaKey||e.ctrlKey||e.altKey) return;
+  const t=(e.composedPath?e.composedPath()[0]:e.target)||{};
+  const tag=(t.tagName||'').toLowerCase();
+  if(tag==='input'||tag==='select'||tag==='textarea'||t.isContentEditable) return;
+  if(S.view!=='q'){ if(e.key==='ArrowLeft'){e.preventDefault();prev();} return; }
+  const k=e.key.toLowerCase(),map={a:0,b:1,c:2,d:3,'1':0,'2':1,'3':2,'4':3};
+  if(k in map){
+    const id=S.order[S.idx];
+    if(!(id in S.answers)&&map[k]<byId[id].opts.length){e.preventDefault();answer(map[k]);}
+  }else if(e.key==='ArrowRight'){e.preventDefault();next();}
+  else if(e.key==='ArrowLeft'){e.preventDefault();prev();}
+});
+
+/* keep other open tabs of the quiz in step */
+window.addEventListener('storage',e=>{
+  if(e.key!==KEY||!e.newValue) return;
+  const r=parseRec(e.newValue);
+  if(r&&r.state&&r.t>lastSaveT){S=r.state;lastSaveT=r.t;render();setStatus('saved');}
+});
+/* write once more when the page is hidden or closed */
+window.addEventListener('pagehide',()=>{try{localStorage.setItem(KEY,JSON.stringify({v:2,t:Date.now(),state:S}));}catch(e){}});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden') save();});
+
+/* check which stores this browser allows */
+for(const get of [()=>localStorage,()=>sessionStorage]){
+  try{const s=get();s.setItem(KEY+':probe','1');s.removeItem(KEY+':probe');storeOK=true;}catch(e){}
+}
+render();
+setStatus(storeOK?'saved':'saving');
+/* if the IndexedDB backup holds newer progress (for example, localStorage was cleared), restore it */
+idbGet().then(str=>{
+  storeOK=true;
+  const r=parseRec(str);
+  if(r&&r.state&&r.t>lastSaveT){S=r.state;lastSaveT=r.t;render();save();}
+  else if(!str&&first) idbPut(JSON.stringify({v:2,t:first.t,state:S})).catch(()=>{});
+}).catch(()=>{}).finally(()=>setStatus(storeOK?'saved':'failed'));
+</script>
+
+</body></html>
